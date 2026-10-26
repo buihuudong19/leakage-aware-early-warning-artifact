@@ -70,6 +70,7 @@ A `robustness` stage runs the sensitivity analyses of the article (110 tasks):
 ├── run_pipeline.py              entry point (all stages, or selected stages)
 ├── run_pipeline.bat             Windows: creates the environment and runs the full pipeline
 ├── run_pipeline.sh              Linux / macOS equivalent
+├── Dockerfile                   container with the library versions of the reported run
 ├── config.yaml                  parameters of the pipeline (sample rules, windows, models, seeds)
 ├── requirements.txt             minimum library versions
 ├── requirements-lock.txt        exact library versions of the reported run
@@ -92,7 +93,7 @@ A `robustness` stage runs the sensitivity analyses of the article (110 tasks):
 ├── docs/
 │   ├── literature_audit.csv     coding sheet of the literature audit (Table 1, Supplementary Table S1)
 │   ├── literature_audit.md      fields and coding rules of the audit
-│   └── supplementary/           learner comparison of an earlier run (Supplementary Table S3)
+│   └── supplementary/           learner comparison and library versions of an earlier run (Supplementary Table S3)
 └── outputs/                     outputs of the reported run
     ├── tables/                  result tables (CSV)
     ├── figures/                 figures (vector PDF and 600-dpi PNG)
@@ -101,7 +102,15 @@ A `robustness` stage runs the sensitivity analyses of the article (110 tasks):
 
 A full run also writes `outputs/logs/` (one log per stage), `outputs/data/` (feature files and saved predictions, about
 160 MB) and `outputs/robustness/` (raw results of the sensitivity analyses, about 450 MB). These are excluded from the
-repository.
+repository; the manifest still lists them (29 entries), so a full run of your own can be checked against it:
+
+| Not shipped | Entries | Reason |
+|---|---|---|
+| `outputs/logs/*.log` | 10 | run logs (progress and timings), not results |
+| `outputs/data/features_t0.pkl`, `features_t0_csv.zip` | 2 | order-level features derived from the Olist tables (CC BY-NC-SA 4.0), about 125 MB; rebuilt by `--stage sample` in under a minute |
+| `outputs/data/*predictions*.csv.gz`, `rq2_scores.csv.gz` | 3 | order-level scores; derived from the Olist tables and rebuilt by a full run |
+| `outputs/robustness/features_*.pkl` | 4 | feature files of the smoothing variants, about 98 MB each (above the GitHub file limit) |
+| `outputs/robustness/*.csv`, `*.csv.gz` | 10 | raw results of the sensitivity analyses; their summaries are in `outputs/tables/robustness_*.csv` |
 
 ## Requirements
 
@@ -171,6 +180,13 @@ After rerunning a single RQ1 stage, run `collect` and the later stages again. Th
 soon as it finishes, so an interrupted run resumes where it stopped. A saved task from a different configuration or
 tuning grid is refused rather than mixed with new results.
 
+**Container.** `Dockerfile` installs the pinned libraries on Python 3.14:
+
+```bash
+docker build -t leakaware .
+docker run --rm -v "$PWD/data:/app/data" -v "$PWD/outputs:/app/outputs" leakaware --quick
+```
+
 The leakage-guard tests need the feature file, so build it first with `--stage sample` and then run:
 
 ```bash
@@ -198,6 +214,8 @@ The script makes two checks:
   means that the code in the checkout is the code that produced the outputs.
 - **Outputs.** It compares every shipped output file with its manifest entry. The 96 tables and figures should match;
   the logs, feature files and robustness files listed in the manifest are not shipped and are reported as absent.
+
+The same check runs on every push (`.github/workflows/verify-manifest.yml`).
 
 The numbers printed in the article are written as LaTeX macros by
 
@@ -237,6 +255,7 @@ Paths below are relative to `outputs/`. Figures are written as `<name>.pdf` and 
 | Supplementary Table S1, audit coding | `docs/literature_audit.csv` (repository root) |
 | Supplementary Table S2, intervals for Table 9 | `tables/rq3_summary.csv` (columns `*_lo`, `*_hi`) |
 | Supplementary Table S3, earlier software environment | `docs/supplementary/rq1b_tuned_ranking_flip_xgboost305_linux.csv` (repository root), `tables/rq1b_tuned_ranking_flip.csv` |
+| Supplementary Table S4, alternative multiplicity adjustments | `tables/supp_paired_contrasts.csv`, `tables/supp_rq3_contrasts.csv` (computed by `tools/gen_results_tex.py`) |
 | Supplementary Fig. S1, sample flow | `figures/fig01_sample_flow` |
 | Supplementary Fig. S2, second task | `figures/fig08_rq1_second_task` |
 | Supplementary Figs. S3 and S4, ROC-AUC versions of Figs. 3 and 4 | `figures/figS1_rq1_inflation_auc`, `figures/figS2_rq1_shapley_auc` |

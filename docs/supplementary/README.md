@@ -9,6 +9,12 @@ to 10. The file therefore shows the combined effect of these changes on the refe
 XGBoost and logistic regression; it does not isolate the library version. It is reported in Table S3 of the
 supplementary material of the article.
 
+`requirements-lock-earlier-run.txt` lists the exact library versions of that run. Its `config.yaml` had the same
+values as the current one for every setting it contained (sample rules, windows, bootstrap and the fixed XGBoost and
+logistic-regression configurations); the random-forest and robustness settings were added later. The code of the
+earlier run is not included: it is an earlier version of this pipeline, and its tuning grids, the only part that
+matters for Table S3, are given above.
+
 Columns: condition (`shortcuts`), metric, mean of XGBoost (`mean_a`), mean of logistic regression (`mean_b`), paired
 difference XGBoost minus logistic regression with its 95% block-bootstrap interval, and the share of windows won by
 XGBoost.

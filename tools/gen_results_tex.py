@@ -588,6 +588,15 @@ m("NHolmContrasts", big(len(r("supp_paired_contrasts.csv")) + len(r("supp_rq3_co
 rob_holm = sum(len(r(f_)) for f_ in ("robustness_serving_rules.csv", "robustness_milestone_contrasts.csv",
                                     "robustness_recal_contrasts.csv") if "p_holm" in r(f_).columns)
 m("NHolmContrastsRob", big(rob_holm), "Holm-adjusted contrasts in the sensitivity analyses")
+# families of the Holm adjustment, grouped as in reporting/inference.py and reporting/robustness_summary.py
+_fm = pd.concat([r("supp_paired_contrasts.csv").groupby(["family", "model"]).size(),
+                 r("supp_rq3_contrasts.csv").groupby(["family", "model"]).size()])
+_fr = pd.concat([r("robustness_serving_rules.csv").groupby("model").size(),
+                 r("robustness_milestone_contrasts.csv").groupby(["model", "budget"]).size(),
+                 r("robustness_recal_contrasts.csv").groupby(["model", "contrast"]).size()])
+assert _fm.sum() == len(r("supp_paired_contrasts.csv")) + len(r("supp_rq3_contrasts.csv")) and _fr.sum() == rob_holm
+m("NHolmFam", str(len(_fm))); m("NHolmFamMin", str(_fm.min())); m("NHolmFamMax", str(_fm.max()))
+m("NHolmFamRob", str(len(_fr))); m("NHolmFamRobMin", str(_fr.min())); m("NHolmFamRobMax", str(_fr.max()))
 DIG = {"1": "One", "2": "Two", "3": "Three"}                # LaTeX command names cannot contain digits
 for k_, v_ in budget.items():
     m("NFits" + "".join(w.capitalize() for w in k_.split("_")).translate(str.maketrans({d: w for d, w in DIG.items()})), big(v_))
@@ -617,6 +626,74 @@ m("OldRefDiffAp", num(_o["diff"])); m("OldRefDiffApCI", ci(_o.ci_lo, _o.ci_hi))
 _o = _OLD[(_OLD.shortcuts == "R") & (_OLD.metric == "ap")].iloc[0]
 m("OldRDiffAp", num(_o["diff"])); m("OldRDiffApCI", ci(_o.ci_lo, _o.ci_hi))
 
+
+# ------------------------------------------------------------------ further checks (forensic review, round 3)
+import math as _math
+from sklearn.metrics import average_precision_score as _aps
+from leakaware.evaluation.splits import rolling_windows as _rw, eval_mask as _em
+from leakaware.evaluation.metrics import moving_block_bootstrap_mean as _mbb
+_cfg3 = yaml.safe_load(open(REPO / "config.yaml", encoding="utf-8"))
+_F3 = pd.read_pickle(OUT / "data" / "features_t0.pkl"); _D3 = _F3[_F3.y >= 0].reset_index(drop=True)
+block("single-feature rankings without a model, reference windows (features_t0.pkl)")
+_rules = {"the seller's past low-rating rate": _D3.h_seller_lowrate, "processing time before hand-over": _D3.f_processing_days,
+          "days left on the promise": -_D3.f_remaining_promise_days, "promised delivery time": _D3.f_promised_days,
+          "seller-customer distance": _D3.f_distance_km, "freight-to-price ratio": _D3.f_freight_ratio}
+_lrw = r("rq1b_tuned_window_metrics.csv"); _lrw = _lrw[(_lrw.model == "lr") & (_lrw.shortcuts == "none")].set_index("k").ap
+_rap = {}
+for _nm, _s in _rules.items():
+    _v = []
+    for _w in _rw(_cfg3):
+        _mk = _em(_D3, _w); _sc = _s[_mk]; _v.append(_aps(_D3.y[_mk], _sc.fillna(_sc.median())))
+    _rap[_nm] = pd.Series(_v, index=[_w["k"] for _w in _rw(_cfg3)])
+_best = max(_rap, key=lambda k_: _rap[k_].mean())
+_d, _lo, _hi, _ = _mbb((_rap[_best] - _lrw).to_numpy(), _cfg3["bootstrap"]["n_boot"], _cfg3["bootstrap"]["block_len"], _cfg3["seed"])
+m("RuleN", str(len(_rules))); m("RuleBestName", _best); m("RuleBestAp", f"{_rap[_best].mean():.3f}")
+m("RuleBestDiff", num(_d)); m("RuleBestDiffCI", ci(_lo, _hi))
+block("ROC-AUC added by post-hand-over features (rq1_inflation.csv)")
+_ia = r("rq1_inflation.csv"); _ia = _ia[(_ia.metric == "auc") & (_ia.shortcuts == "P")]
+m("PAucDeltaLo", f"{_ia.delta.min():.3f}"); m("PAucDeltaHi", f"{_ia.delta.max():.3f}")
+block("latency by tercile of the days left on the promise (features_t0.pkl), ages 7 to 28 days")
+_lag3 = (_D3.label_available_ts - _D3.t0).dt.total_seconds() / 86400
+_terc = pd.qcut(_D3.f_remaining_promise_days, 3, labels=False)
+_u3 = np.arange(7.0, 28.001, 0.5); _rat = []
+for _y in (0, 1):
+    _G = np.array([(_lag3[_D3.y == _y] <= x).mean() for x in _u3])
+    for _t in range(3):
+        _sel = (_D3.y == _y) & (_terc == _t)
+        _rat.append(np.array([(_lag3[_sel] <= x).mean() for x in _u3]) / _G)
+_rat = np.concatenate(_rat)
+m("LatRatioLo", f"{_rat.min():.2f}"); m("LatRatioHi", f"{_rat.max():.2f}")
+block("alerts by customer state, reference protocol, fixed configuration, LR, 10% per window (rq1_reference_predictions)")
+_STATE = {"AC": "Acre", "AL": "Alagoas", "AM": "Amazonas", "AP": "Amap\\'a", "BA": "Bahia", "CE": "Cear\\'a",
+          "DF": "the Federal District", "ES": "Esp\\'irito Santo", "GO": "Goi\\'as", "MA": "Maranh\\~ao",
+          "MG": "Minas Gerais", "MS": "Mato Grosso do Sul", "MT": "Mato Grosso", "PA": "Par\\'a", "PB": "Para\\'iba",
+          "PE": "Pernambuco", "PI": "Piau\\'i", "PR": "Paran\\'a", "RJ": "Rio de Janeiro", "RN": "Rio Grande do Norte",
+          "RO": "Rond\\^onia", "RR": "Roraima", "RS": "Rio Grande do Sul", "SC": "Santa Catarina", "SE": "Sergipe",
+          "SP": "S\\~ao Paulo", "TO": "Tocantins"}
+_P = pd.read_csv(OUT / "data" / "rq1_reference_predictions.csv.gz")
+_P = _P[_P.model == "lr"].merge(_F3[["order_id", "c_customer_state"]], on="order_id", how="left")
+_P["alert"] = 0
+for _k, _g in _P.groupby("k"):
+    _P.loc[_g.sort_values("score", ascending=False, kind="stable").index[:_math.ceil(0.1 * len(_g))], "alert"] = 1
+_ST = _P.groupby("c_customer_state").agg(n=("y", "size"), low=("y", "mean"), alert=("alert", "mean"))
+_ST = _ST[_ST.n >= 1000]
+m("StateMinN", big(1000)); m("StateN", str(len(_ST)))
+m("StateAlertLo", pct(100 * _ST.alert.min())); m("StateAlertLoName", _STATE[_ST.alert.idxmin()])
+m("StateAlertHi", pct(100 * _ST.alert.max())); m("StateAlertHiName", _STATE[_ST.alert.idxmax()])
+m("StateLowLo", pct(100 * _ST.low.min())); m("StateLowHi", pct(100 * _ST.low.max()))
+block("literature audit: studies coded from the full text (docs/literature_audit.csv)")
+_AF = pd.read_csv(_REPO / "docs" / "literature_audit.csv")
+_AF = _AF[_AF.id.str.startswith("P") & _AF.note.str.contains(r"\[evidence: full text\]", regex=True)]
+m("AuditFtN", str(len(_AF)))
+m("AuditFtTemporal", str(int((_AF.split == "temporal").sum())))
+m("AuditFtPurge", str(int((_AF.label_availability_purge == "yes").sum())))
+m("AuditFtPost", str(int((_AF.post_outcome_features == "yes").sum())))
+m("AuditFtPredTime", str(int(_AF.prediction_time.astype(str).str.match(r"(stated|after review)").sum())))
+_W = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+m("AuditFtNWord", _W[len(_AF)]); m("AuditFtTemporalWord", _W[int((_AF.split == "temporal").sum())])
+m("AuditFtPurgeWord", _W[int((_AF.label_availability_purge == "yes").sum())])
+m("AuditFtPostWord", _W[int((_AF.post_outcome_features == "yes").sum())])
+m("AuditFtPredTimeWord", _W[int(_AF.prediction_time.astype(str).str.match(r"(stated|after review)").sum())])
 
 for title, items in blocks:
     lines.append(f"\n%% ---- {title}")
@@ -733,3 +810,30 @@ with open(SUPP, "a", encoding="utf-8") as _fh:
     for _k, _v in _cnt.items():
         _fh.write(f"\\newcommand{{\\SuppAudit{_k.capitalize()}}}{{{_v}}}\n")
 print("audit counts", _cnt)
+
+# alternative multiplicity adjustments for the main contrasts (Supplementary Table S4)
+from leakaware.reporting.inference import holm as _holm
+_cols = ["family", "model", "contrast", "mean", "ci_lo", "ci_hi", "p", "p_hac", "p_holm"]
+_AC = pd.concat([r("supp_paired_contrasts.csv")[_cols], r("supp_rq3_contrasts.csv")[_cols]], ignore_index=True)
+_AC["p_all"] = _holm(_AC.p)
+_o = np.argsort(_AC.p.to_numpy()); _q = _AC.p.to_numpy()[_o] * len(_AC) / np.arange(1, len(_AC) + 1)
+_q = np.minimum(np.minimum.accumulate(_q[::-1])[::-1], 1.0); _AC["p_bh"] = np.empty(len(_AC)); _AC.loc[_o, "p_bh"] = _q
+_AC["p_hac_holm"] = np.nan
+for _, _ix in _AC.groupby(["family", "model"]).groups.items():
+    _AC.loc[_ix, "p_hac_holm"] = _holm(_AC.loc[_ix, "p_hac"])
+
+
+def _pf(x):
+    return "$<$0.001" if x < 0.001 else f"{x:.3f}"
+
+
+_PAIR = {"xgb - lr": "XGBoost $-$ LR", "rf - lr": "RF $-$ LR", "xgb - rf": "XGBoost $-$ RF"}
+_PROT = {"none": "Reference", "R": r"\textsf{R}", "R+G+P": r"\textsf{R}{+}\textsf{G}{+}\textsf{P}"}
+_t4 = _AC[_AC.family == "RQ1 learner comparison, nested tuning"]
+_rows4 = [f"{_PAIR[x.model]} & {_PROT[x.contrast]} & {num(x['mean'])} & {_pf(x.p)} & {_pf(x.p_holm)} & {_pf(x.p_hac)} & "
+          f"{_pf(x.p_hac_holm)} & {_pf(x.p_all)} & {_pf(x.p_bh)} \\\\" for _, x in _t4.iterrows()]
+with open(SUPP, "a", encoding="utf-8") as _fh:
+    _fh.write("\\newcommand{\\TabSuppHolmRows}{%\n" + "\n".join(_rows4) + "\n}\n")
+    for _nm, _c in (("Fam", "p_holm"), ("HacFam", "p_hac_holm"), ("All", "p_all"), ("Bh", "p_bh")):
+        _fh.write(f"\\newcommand{{\\SuppSig{_nm}}}{{{int((_AC[_c] < 0.05).sum())}}}\n")
+    _fh.write(f"\\newcommand{{\\SuppSigN}}{{{len(_AC)}}}\n")

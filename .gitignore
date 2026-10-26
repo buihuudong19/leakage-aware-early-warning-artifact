@@ -26,3 +26,6 @@ Thumbs.db
 
 # Earlier outputs moved aside before a full run (run_pipeline.bat / run_pipeline.sh)
 _archive/
+
+# LaTeX logs created by mistake
+texput.log
