@@ -1,0 +1,59 @@
+# Single configuration file for the whole pipeline. Relative paths are resolved from the repository root.
+data_dir: data/raw      # the nine raw Olist CSV tables (Kaggle); the geolocation table may be stored as .csv.gz
+out_dir: outputs
+seed: 42
+
+sample:
+  # Orders with several reviews (547 in the current Olist release) are labelled by their worst score.
+  multi_review_score: min
+  label_available_ts: last_answer               # a label counts as known once the last review has been answered
+  exclude_if_feedback_before_t0: first_answer   # drop orders with any review answered before hand-over (t0)
+  low_scores: [1, 2]
+  high_scores: [4, 5]                           # three-star orders stay in the feature file, flagged, for sensitivity analyses
+
+features:
+  smoothing_m: 20                    # shrinkage weight of the as-of low-rating rates (m-estimate)
+  seller_volume_window_days: 30
+
+rolling:
+  first_origin: "2017-06-01"
+  last_origin: "2018-07-16"
+  step_days: 14                      # origins every two weeks
+  horizon_days: 14                   # each evaluation window covers 14 days of hand-overs
+  min_train: 2000
+
+random_split:
+  n_folds: 5
+
+bootstrap:
+  n_boot: 2000
+  block_len: 3                       # moving-block bootstrap over the sequence of windows
+
+models:
+  xgb:
+    n_estimators: 300
+    max_depth: 5
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 5
+    reg_lambda: 1.0
+  lr:
+    C: 0.5
+  rf:
+    n_estimators: 200
+    max_depth: 12
+    min_samples_leaf: 20
+    max_features: sqrt
+    max_samples: 0.5                 # each tree is grown on a bootstrap sample of half the training orders
+
+# Learners of the main RQ1 analyses (factorial design, realised performance, nested learner comparison). The RQ2,
+# RQ3 and second-task analyses and the robustness analyses use XGBoost and LR.
+learners: [xgb, lr, rf]
+
+robustness:
+  seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]   # extra seeds for the learner comparison (seed 42 is the main run)
+  extra_milestones: ["t0+1d", "t0+2d"]     # milestones added to the six of the main RQ2 analysis
+  alert_budgets: [0.05, 0.10, 0.20]
+  smoothing_variants: [5, 50]              # alternative values of smoothing_m
+  late_prior_variants: [0.04, 0.12]        # alternative priors of the seller late-delivery rate (main value 0.08)

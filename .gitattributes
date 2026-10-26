@@ -1,0 +1,13 @@
+# Text files are stored with LF line endings; the code hashes in outputs/manifest.json normalise line endings,
+# so a Windows checkout with CRLF gives the same values.
+* text=auto
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Outputs of the reported run are kept byte for byte, so that their SHA-256 values match outputs/manifest.json.
+outputs/** -text
+docs/supplementary/*.csv -text
+*.pdf binary
+*.png binary
+*.gz binary
+*.zip binary

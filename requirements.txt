@@ -1,0 +1,8 @@
+# Minimum versions. The exact versions of the reported run are pinned in requirements-lock.txt.
+numpy>=2.0
+pandas>=2.2
+scikit-learn>=1.5
+scipy>=1.13
+xgboost>=2.1
+matplotlib>=3.10
+PyYAML>=6.0

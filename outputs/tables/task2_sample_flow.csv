@@ -1,0 +1,6 @@
+﻿step,n_orders
+All orders in the orders table,99441
+delivered,96478
+"approval, delivery and promised dates recorded",96456
+at least one item / seller (analysis sample),96456
+of which delivered late (y = 1),6534

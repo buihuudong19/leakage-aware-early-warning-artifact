@@ -1,0 +1,8 @@
+# Exact versions of the run reported in the article (Python 3.14.4, Windows 11, Intel Core i9-14900HX).
+numpy==2.5.4
+pandas==3.0.6
+scikit-learn==1.9.1
+scipy==1.18.1
+xgboost==3.4.1
+matplotlib==3.11.2
+PyYAML==6.0.3

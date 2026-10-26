@@ -1,0 +1,7 @@
+﻿step,n_orders,removed
+All orders in the orders table,99441,0
+R1: status 'delivered',96478,2963
+R2: carrier hand-over time (t0) recorded,96476,2
+R3: at least one review,95830,646
+R5: no review answered before t0,95612,218
+R6: main analysis sample (three-star orders removed),87703,7909

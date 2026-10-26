@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the article below."
+title: "Code for: Leakage-Aware Evaluation of Early-Warning Models for Customer Dissatisfaction in E-Commerce"
+authors:
+  - family-names: "Bui-Huu"
+    given-names: "Dong"
+    orcid: "https://orcid.org/0009-0007-6617-8505"
+    affiliation: "Faculty of Management Information Systems, Ho Chi Minh University of Banking"
+version: "1.0.0"
+date-released: "2026-10-26"
+license: MIT
+repository-code: "https://github.com/USERNAME/leakage-aware-early-warning"
+keywords: [e-commerce, early warning, data leakage, temporal evaluation, label latency, recalibration, Olist]
+preferred-citation:
+  type: article
+  title: "Leakage-Aware Evaluation of Early-Warning Models for Customer Dissatisfaction in E-Commerce: Performance Inflation, Timeliness Trade-offs, and Label-Latency Bias in Recalibration"
+  authors:
+    - family-names: "Bui-Huu"
+      given-names: "Dong"
+      orcid: "https://orcid.org/0009-0007-6617-8505"
+      affiliation: "Faculty of Management Information Systems, Ho Chi Minh University of Banking"
+    - family-names: "Pham-An"
+      given-names: "Vinh"
+      orcid: "https://orcid.org/0009-0001-0320-5306"
+      affiliation: "Faculty of Computer Science and Engineering, Ho Chi Minh City University of Technology (HCMUT); Vietnam National University Ho Chi Minh City"
+    - family-names: "Nguyen-An"
+      given-names: "Khuong"
+      orcid: "https://orcid.org/0000-0002-9910-6387"
+      affiliation: "Faculty of Computer Science and Engineering, Ho Chi Minh City University of Technology (HCMUT); Vietnam National University Ho Chi Minh City"
+  journal: "Electronic Commerce Research and Applications"
+  year: 2026
+  notes: "Manuscript under review"
