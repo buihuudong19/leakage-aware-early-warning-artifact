@@ -9,7 +9,8 @@ authors:
 version: "1.0.0"
 date-released: "2026-10-26"
 license: MIT
-repository-code: "https://github.com/USERNAME/leakage-aware-early-warning"
+doi: "10.5281/zenodo.23661181"
+repository-code: "https://github.com/buihuudong19/leakage-aware-early-warning-artifact"
 keywords: [e-commerce, early warning, data leakage, temporal evaluation, label latency, recalibration, Olist]
 preferred-citation:
   type: article

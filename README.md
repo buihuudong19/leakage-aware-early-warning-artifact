@@ -6,6 +6,9 @@ This repository contains the code, the literature-audit data and the outputs of 
 > E-Commerce: Performance Inflation, Timeliness Trade-offs, and Label-Latency Bias in Recalibration.* Submitted to
 > *Electronic Commerce Research and Applications*, 2026.
 
+The release used in the article is archived on Zenodo: version 1.0.0 at
+<https://doi.org/10.5281/zenodo.23661182>; all versions at <https://doi.org/10.5281/zenodo.23661181>.
+
 A single command rebuilds the analysis sample from the public Olist data, runs every experiment and sensitivity
 analysis, and writes every table and figure of the article and its supplementary material. The outputs of the reported
 run are included in `outputs/`. Their hashes, and the hashes of the code that produced them, are recorded in
