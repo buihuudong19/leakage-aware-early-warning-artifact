@@ -6,8 +6,9 @@ This repository contains the code, the literature-audit data and the outputs of 
 > E-Commerce: Performance Inflation, Timeliness Trade-offs, and Label-Latency Bias in Recalibration.* Submitted to
 > *Electronic Commerce Research and Applications*, 2026.
 
-The release used in the article is archived on Zenodo: version 1.0.0 at
-<https://doi.org/10.5281/zenodo.23661182>; all versions at <https://doi.org/10.5281/zenodo.23661181>.
+The code is archived on Zenodo; all versions are at <https://doi.org/10.5281/zenodo.23661181>. The article uses
+version 1.0.1. Version 1.0.0 (<https://doi.org/10.5281/zenodo.23661182>) has the same analysis code and outputs; it
+differs in the documentation, the coding of one audited study (P10) and `tools/gen_results_tex.py`.
 
 A single command rebuilds the analysis sample from the public Olist data, runs every experiment and sensitivity
 analysis, and writes every table and figure of the article and its supplementary material. The outputs of the reported
@@ -70,7 +71,6 @@ A `robustness` stage runs the sensitivity analyses of the article (110 tasks):
 ├── run_pipeline.py              entry point (all stages, or selected stages)
 ├── run_pipeline.bat             Windows: creates the environment and runs the full pipeline
 ├── run_pipeline.sh              Linux / macOS equivalent
-├── Dockerfile                   container with the library versions of the reported run
 ├── config.yaml                  parameters of the pipeline (sample rules, windows, models, seeds)
 ├── requirements.txt             minimum library versions
 ├── requirements-lock.txt        exact library versions of the reported run
@@ -179,13 +179,6 @@ The stages run in this order:
 After rerunning a single RQ1 stage, run `collect` and the later stages again. The robustness stage saves each task as
 soon as it finishes, so an interrupted run resumes where it stopped. A saved task from a different configuration or
 tuning grid is refused rather than mixed with new results.
-
-**Container.** `Dockerfile` installs the pinned libraries on Python 3.14:
-
-```bash
-docker build -t leakaware .
-docker run --rm -v "$PWD/data:/app/data" -v "$PWD/outputs:/app/outputs" leakaware --quick
-```
 
 The leakage-guard tests need the feature file, so build it first with `--stage sample` and then run:
 

@@ -6,7 +6,7 @@ authors:
     given-names: "Dong"
     orcid: "https://orcid.org/0009-0007-6617-8505"
     affiliation: "Faculty of Management Information Systems, Ho Chi Minh University of Banking"
-version: "1.0.0"
+version: "1.0.1"
 date-released: "2026-10-26"
 license: MIT
 doi: "10.5281/zenodo.23661181"
@@ -30,4 +30,3 @@ preferred-citation:
       affiliation: "Faculty of Computer Science and Engineering, Ho Chi Minh City University of Technology (HCMUT); Vietnam National University Ho Chi Minh City"
   journal: "Electronic Commerce Research and Applications"
   year: 2026
-  notes: "Manuscript under review"
