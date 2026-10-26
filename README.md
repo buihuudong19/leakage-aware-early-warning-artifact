@@ -7,7 +7,7 @@ This repository contains the code, the literature-audit data and the outputs of 
 > *Electronic Commerce Research and Applications*, 2026.
 
 The code is archived on Zenodo; all versions are at <https://doi.org/10.5281/zenodo.23661181>. The article uses
-version 1.0.1. Version 1.0.0 (<https://doi.org/10.5281/zenodo.23661182>) has the same analysis code and outputs; it
+version 1.0.1 (<https://doi.org/10.5281/zenodo.23668193>). Version 1.0.0 (<https://doi.org/10.5281/zenodo.23661182>) has the same analysis code and outputs; it
 differs in the documentation, the coding of one audited study (P10) and `tools/gen_results_tex.py`.
 
 A single command rebuilds the analysis sample from the public Olist data, runs every experiment and sensitivity
