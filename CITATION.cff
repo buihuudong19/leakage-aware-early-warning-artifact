@@ -6,8 +6,8 @@ authors:
     given-names: "Dong"
     orcid: "https://orcid.org/0009-0007-6617-8505"
     affiliation: "Faculty of Management Information Systems, Ho Chi Minh University of Banking"
-version: "1.0.1"
-date-released: "2026-10-26"
+version: "1.0.2"
+date-released: "2026-10-28"
 license: MIT
 doi: "10.5281/zenodo.23661181"
 repository-code: "https://github.com/buihuudong19/leakage-aware-early-warning-artifact"

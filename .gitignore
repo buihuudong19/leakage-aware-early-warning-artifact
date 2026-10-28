@@ -16,6 +16,9 @@ data/raw/*
 outputs/logs/
 outputs/data/
 outputs/robustness/
+outputs_extra/logs/
+# restart files of tools/sample_variants.py (the combined sample_*_rq2_window_metrics.csv are kept)
+outputs_extra/tables/*_part_*.csv
 *.pkl
 
 # Editors and operating systems
@@ -26,6 +29,3 @@ Thumbs.db
 
 # Earlier outputs moved aside before a full run (run_pipeline.bat / run_pipeline.sh)
 _archive/
-
-# LaTeX logs created by mistake
-texput.log

@@ -1,0 +1,10 @@
+.git
+.venv
+_archive
+data/raw/*
+!data/raw/.gitkeep
+outputs/logs
+outputs/data
+outputs/robustness
+outputs_extra/logs
+__pycache__

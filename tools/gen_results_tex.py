@@ -627,7 +627,7 @@ _o = _OLD[(_OLD.shortcuts == "R") & (_OLD.metric == "ap")].iloc[0]
 m("OldRDiffAp", num(_o["diff"])); m("OldRDiffApCI", ci(_o.ci_lo, _o.ci_hi))
 
 
-# ------------------------------------------------------------------ further checks (forensic review, round 3)
+# ------------------------------------------------------------------ further checks added during the revision of the manuscript
 import math as _math
 from sklearn.metrics import average_precision_score as _aps
 from leakaware.evaluation.splits import rolling_windows as _rw, eval_mask as _em
@@ -837,3 +837,6 @@ with open(SUPP, "a", encoding="utf-8") as _fh:
     for _nm, _c in (("Fam", "p_holm"), ("HacFam", "p_hac_holm"), ("All", "p_all"), ("Bh", "p_bh")):
         _fh.write(f"\\newcommand{{\\SuppSig{_nm}}}{{{int((_AC[_c] < 0.05).sum())}}}\n")
     _fh.write(f"\\newcommand{{\\SuppSigN}}{{{len(_AC)}}}\n")
+    _x = _t4[(_t4.model == "xgb - lr") & (_t4.contrast == "none")].iloc[0]   # cited in Section 4.5
+    _fh.write(f"\\newcommand{{\\SuppRefXgbLrHolmAll}}{{{_pf(_x.p_all)}}}\n")
+    _fh.write(f"\\newcommand{{\\SuppRefXgbLrHolmFam}}{{{_pf(_x.p_holm)}}}\n")
