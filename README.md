@@ -7,7 +7,8 @@ This repository contains the code, the literature-audit data and the outputs of 
 > *Electronic Commerce Research and Applications*, 2026.
 
 The code is archived on Zenodo; all versions are at <https://doi.org/10.5281/zenodo.23661181>. The article uses
-version 1.0.2, which adds the Dockerfile and the reference check. Versions 1.0.1
+version 1.0.2 (<https://doi.org/10.5281/zenodo.23724874>), which adds the Dockerfile, the reference check and the
+checks added during revision (`tools/`, `outputs_extra/`). Versions 1.0.1
 (<https://doi.org/10.5281/zenodo.23668193>) and 1.0.0 (<https://doi.org/10.5281/zenodo.23661182>) have the same analysis
 code and outputs; they differ in the documentation, the coding of one audited study (P10, from 1.0.1) and
 `tools/gen_results_tex.py`.
