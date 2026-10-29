@@ -1,4 +1,4 @@
-"""LaTeX macros for the checks added during revision.
+"""LaTeX macros for the additional checks.
 
 usage: python tools/gen_extra_tex.py EXTRA_DIR OUT_TEX
 

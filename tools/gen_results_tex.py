@@ -627,7 +627,7 @@ _o = _OLD[(_OLD.shortcuts == "R") & (_OLD.metric == "ap")].iloc[0]
 m("OldRDiffAp", num(_o["diff"])); m("OldRDiffApCI", ci(_o.ci_lo, _o.ci_hi))
 
 
-# ------------------------------------------------------------------ further checks added during the revision of the manuscript
+# ------------------------------------------------------------------ further checks added to the manuscript
 import math as _math
 from sklearn.metrics import average_precision_score as _aps
 from leakaware.evaluation.splits import rolling_windows as _rw, eval_mask as _em

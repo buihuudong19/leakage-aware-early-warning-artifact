@@ -1,6 +1,6 @@
-# Outputs of the checks added during revision
+# Outputs of the additional checks
 
-Written by `tools\run_revision_checks.bat` (see "Checks added during revision" in the main README) after a full run of
+Written by `tools\run_revision_checks.bat` (see "Additional checks" in the main README) after a full run of
 `run_pipeline.bat` on the machine of the reported run (Windows 11, Python 3.14.4, the library versions of
 `requirements-lock.txt`). They are not part of `outputs/manifest.json`; every number taken from them into the article
 goes through `results_extra.tex`.

@@ -31,7 +31,7 @@ October 2026.
 
 * One person coded all studies. Five studies (P01, P02, P04, P06, P10) were coded from the full text, eleven from the
   abstract and one (P17) from metadata only. P10 was first coded from its abstract and recoded from the full text
-  during revision.
+  in a second pass.
 * A practice that is not reported is coded `not stated` or `unclear`; it is never coded as present. Table 1 therefore
   measures reporting practice, not what the authors did.
 * `post_outcome_features = yes` describes the inputs. Whether they are leaky depends on the prediction time, which only

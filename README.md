@@ -8,7 +8,7 @@ This repository contains the code, the literature-audit data and the outputs of 
 
 The code is archived on Zenodo; all versions are at <https://doi.org/10.5281/zenodo.23661181>. The article uses
 version 1.0.2 (<https://doi.org/10.5281/zenodo.23724874>), which adds the Dockerfile, the reference check and the
-checks added during revision (`tools/`, `outputs_extra/`). Versions 1.0.1
+additional checks (`tools/`, `outputs_extra/`). Versions 1.0.1
 (<https://doi.org/10.5281/zenodo.23668193>) and 1.0.0 (<https://doi.org/10.5281/zenodo.23661182>) have the same analysis
 code and outputs; they differ in the documentation, the coding of one audited study (P10, from 1.0.1) and
 `tools/gen_results_tex.py`.
@@ -26,7 +26,7 @@ run are included in `outputs/`. Their hashes, and the hashes of the code that pr
 - [Data](#data)
 - [Running the pipeline](#running-the-pipeline)
 - [Checking the reported run without rerunning it](#checking-the-reported-run-without-rerunning-it)
-- [Checks added during revision](#checks-added-during-revision)
+- [Additional checks](#additional-checks)
 - [Outputs and the article](#outputs-and-the-article)
 - [Experimental design and number of model fits](#experimental-design-and-number-of-model-fits)
 - [Reproducibility notes](#reproducibility-notes)
@@ -99,7 +99,7 @@ A `robustness` stage runs the sensitivity analyses of the article (110 tasks):
 │   ├── archive_outputs.py       moves earlier outputs to _archive/ before a full run
 │   ├── verify_manifest.py       checks the code and the outputs against outputs/manifest.json
 │   ├── gen_results_tex.py       writes the LaTeX number macros of the article from the outputs
-│   └── ...                      checks added during revision (see below)
+│   └── ...                      additional checks (see below)
 ├── docs/
 │   ├── literature_audit.csv     coding sheet of the literature audit (Table 1, Supplementary Table S1)
 │   ├── literature_audit.md      fields and coding rules of the audit
@@ -246,7 +246,7 @@ The script reads the result tables, `outputs/data/features_t0.pkl`, `outputs/log
 of a full run of your own. It also writes `supp_tables.tex` (the tables of the supplementary material) next to
 `tab_rq3.tex`.
 
-## Checks added during revision
+## Additional checks
 
 These scripts import the released package without changing it and write to a separate folder (`EXTRA_DIR`), so the
 shipped outputs and the manifest are not touched. They need the outputs of a full run (feature and prediction files).

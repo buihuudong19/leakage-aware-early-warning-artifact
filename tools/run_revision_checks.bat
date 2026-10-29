@@ -1,6 +1,6 @@
 @echo off
 REM ---------------------------------------------------------------------------------------------
-REM Checks added during the revision of the manuscript (README, "Checks added during revision").
+REM Additional checks of the manuscript (README, "Additional checks").
 REM Run after a full run of run_pipeline.bat, from the same checkout: the scripts read outputs\ and
 REM the raw tables in data\raw, and write only to outputs_extra\. Usage:
 REM     tools\run_revision_checks.bat                 seeds 1 to 10, as in the learner comparison
