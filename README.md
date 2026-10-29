@@ -2,16 +2,15 @@
 
 This repository contains the code, the literature-audit data and the outputs of the article
 
-> Dong Bui-Huu, Vinh Pham-An and Khuong Nguyen-An. *Leakage-Aware Evaluation of Early-Warning Models for Customer Dissatisfaction in
-> E-Commerce: Performance Inflation, Timeliness Trade-offs, and Label-Latency Bias in Recalibration.* Submitted to
-> *Electronic Commerce Research and Applications*, 2026.
+> *Leakage-Aware Evaluation of Early-Warning Models for Customer Dissatisfaction in E-Commerce: Performance Inflation,
+> Timeliness Trade-offs, and Label-Latency Bias in Recalibration.* Manuscript under double-anonymized review at
+> *Electronic Commerce Research and Applications*.
 
-The code is archived on Zenodo; all versions are at <https://doi.org/10.5281/zenodo.23661181>. The article uses
-version 1.0.2 (<https://doi.org/10.5281/zenodo.23724874>), which adds the Dockerfile, the reference check and the
-additional checks (`tools/`, `outputs_extra/`). Versions 1.0.1
-(<https://doi.org/10.5281/zenodo.23668193>) and 1.0.0 (<https://doi.org/10.5281/zenodo.23661182>) have the same analysis
-code and outputs; they differ in the documentation, the coding of one audited study (P10, from 1.0.1) and
-`tools/gen_results_tex.py`.
+This copy is anonymized for peer review. The author names and the persistent identifier (DOI) of the archived release
+are withheld and will be added after the review. The analysis code (`src/`, `config.yaml`, `run_pipeline.py`,
+`requirements-lock.txt`), the outputs in `outputs/` and their hashes in `outputs/manifest.json` are those of the
+archived release used in the article (version 1.0.2, which includes the Dockerfile, the reference check and the
+additional checks in `tools/` and `outputs_extra/`).
 
 A single command rebuilds the analysis sample from the public Olist data, runs every experiment and sensitivity
 analysis, and writes every table and figure of the article and its supplementary material. The outputs of the reported
@@ -356,7 +355,8 @@ Statistical inference uses:
 
 ## Citation
 
-If you use this code or the audit data, please cite the article. `CITATION.cff` contains the citation metadata.
+If you use this code or the audit data, please cite the article. `CITATION.cff` contains the citation metadata; in this
+anonymized copy the authors and the DOI are withheld until the review is completed.
 
 ## License
 
